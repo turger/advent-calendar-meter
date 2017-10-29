@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Badges from './badges'
 import Stamps from './stamps'
+import Ranking from './ranking'
 import 'src/assets/stylesheets/base.scss'
 
 class App extends Component {
@@ -22,25 +23,16 @@ class App extends Component {
   }
 
   sortByBest = (data) => {
-    return data.sort((a, b) => {
-      const badges = b.total.badges.length - a.total.badges.length
-      const soldPerSeller = b.total.soldPerSeller - a.total.soldPerSeller
-      const given = b.total.given - a.total.given
-      const totalSellers = b.total.totalSellers - a.total.totalSellers
-      if (soldPerSeller !== 0) { return soldPerSeller }
-      else if (badges !== 0) { return badges }
-      else if (given !== 0) { return given }
-      return totalSellers
-    })
+    return data.sort((a, b) => b.total.soldPerSeller - a.total.soldPerSeller)
   }
 
   render() {
     if (!this.state.data) return null
     return (
       <div>
-        <h1>Koukkaajien kalenterimyyntikisa</h1>
+        <h1>Koukkaajien kalenteri&shy;myynti&shy;kisa</h1>
           <div className="allgroups">
-          { this.state.data.map(group =>
+          { this.state.data.map((group, i) =>
             <div className="group">
               <div className="group__info">
                 <h2 className="group__name"> { group.total.sheetName } </h2>
@@ -50,7 +42,8 @@ class App extends Component {
                 </div>
               </div>
               <div className="group__total">
-                <p>{ Math.round(group.total.soldPerSeller) }</p>
+                <div className="group__totalperseller">{ Math.round(group.total.soldPerSeller) }</div>
+                <Ranking ranking={ i+1 }/>
               </div>
             </div>
           )}
