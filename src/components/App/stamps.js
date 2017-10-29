@@ -41,7 +41,9 @@ const Stamps = ({stamps}) => (
       { stamps.map(stamp =>
         <div>
           <Emoji name={ getEmojiName(stamp) }/>
-          <span class="tooltiptext">{ getToolTip(stamp) }</span>
+          <div className="tooltip">
+            <span class="tooltiptext">{ getToolTip(stamp) }</span>
+          </div>
         </div>
       )}
     </div>

@@ -29,7 +29,9 @@ const Badges = ({badges}) => (
       { badges.map(badge =>
         <div>
           <Emoji name={ getEmojiName(badge) } />
-          <span class="tooltiptext">{ getToolTip(badge) }</span>
+          <div className="tooltip">
+            <span class="tooltiptext">{ getToolTip(badge) }</span>
+          </div>
         </div>
       )}
     </div>

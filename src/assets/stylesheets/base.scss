@@ -78,7 +78,7 @@ h1 {
   flex-flow: row;
 }
 
-.group__badges div, .group__stamps div {
+.group__badges .Emoji, .group__stamps .Emoji {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -93,35 +93,43 @@ h1 {
   height: 25px;
 }
 
-.tooltiptext {
-    visibility: hidden;
-    width: 80px;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    font-size: 12px;
-    font-family: 'Roboto';
-    padding: 5px;
-    border-radius: 6px;
-    position: absolute;
-    z-index: 1;
-    margin-top: 40px;
-    opacity: 0;
-    transition: opacity 1s;
+.tooltip {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
 }
 
-.tooltiptext::after {
-    content: "";
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent #555 transparent;
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 80px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  font-size: 12px;
+  font-family: 'Roboto';
+  padding: 5px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  margin-top: 3px;
+  margin-left: -28px;
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #555 transparent;
 }
 
 .group__badges div:hover .tooltiptext, .group__stamps div:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
+  visibility: visible;
+  opacity: 1;
 }
