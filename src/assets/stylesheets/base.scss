@@ -1,0 +1,125 @@
+body {
+  background: #f7f7f7;
+  padding: 0;
+  margin: 0;
+  font: 10px 'Raleway', sans-serif;
+  color: #000;
+}
+
+h1 {
+  font: 40px 'Changa One', sans-serif;
+  text-align: center;
+  word-wrap: break-word;
+  padding: 0 20px;
+}
+
+.allgroups {
+  max-width: 768px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.group {
+  display: flex;
+  height: 65px;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 20px;
+  background-color: #28b69e;
+  color: #fff;
+  padding: 0 20px;
+  margin-bottom: 5px;
+}
+
+.group:nth-child(1) { background-color: #f2b629; }
+.group:nth-child(2) { background-color: #f6802e; }
+.group:nth-child(3) { background-color: #e6482d; }
+
+.group__name {
+  text-transform: uppercase;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  padding-top: 5px;
+}
+
+.group__info {
+  display: flex;
+  flex-direction: column;
+}
+
+.group__total {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.group__total > p {
+  margin: 0;
+  font-size: 20px;
+  line-height: 2;
+  font-weight: 700;
+}
+
+.group__total > p:first-child {
+  display: block;
+}
+
+.group__achievements {
+  display: flex;
+  flex-flow: row;
+}
+
+.group__badges, .group__stamps {
+  display: flex;
+  flex-flow: row;
+}
+
+.group__badges div, .group__stamps div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 25px;
+  height: 25px;
+  margin: 5px;
+}
+
+.group__badges img, .group__stamps img {
+  width: 25px;
+  height: 25px;
+}
+
+.tooltiptext {
+    visibility: hidden;
+    width: 80px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+    margin-top: 40px;
+    opacity: 0;
+    transition: opacity 1s;
+}
+
+.tooltiptext::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #555 transparent;
+}
+
+.group__badges div:hover .tooltiptext, .group__stamps div:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
