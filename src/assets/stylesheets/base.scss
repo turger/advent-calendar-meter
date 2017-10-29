@@ -23,7 +23,7 @@ h1 {
 
 .group {
   display: flex;
-  height: 65px;
+  height: 70px;
   align-items: center;
   justify-content: space-between;
   border-radius: 20px;
@@ -43,6 +43,7 @@ h1 {
   font-weight: 700;
   margin: 0;
   padding-top: 5px;
+  word-wrap: break-word;
 }
 
 .group__info {
@@ -58,15 +59,17 @@ h1 {
 }
 
 .group__totalperseller {
-  font-size: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
   text-align: center;
   font-weight: 700;
-  width: 50px;
-  max-height: 30px;
+  width: 40px;
+  height: 25px;
   border-radius: 50px;
   background-color: #ff33cf;
-  box-shadow: 0px 10px 5px #d31da8;
-  margin-top: -5px;
 }
 
 .group__total > p:first-child {
