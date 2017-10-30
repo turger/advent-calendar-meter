@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const GoogleAPI = require('./GoogleAPI')
 const pug = require('pug')
+let googleData = null
 
 app.use(favicon(path.join(__dirname, 'src/assets', 'favicon.ico')))
 app.use(logger('dev'))
@@ -24,11 +25,7 @@ app.get('/', function(req, res) {
 })
 
 app.get('/data', function(req, res, next) {
-  GoogleAPI.getAllData().then(
-    function (data) {
-      res.send(data)
-    }
-  )
+  res.send(googleData)
 })
 
 app.use(function(req, res, next) {
@@ -45,6 +42,20 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500)
   res.render('error')
 })
+
+const getGoogleData = () => {
+  GoogleAPI.getAllData().then(data => {
+      googleData = data
+    }
+  ).catch(function (err) {
+   console.log('Error:', err)
+ })
+}
+
+getGoogleData()
+setInterval(function(){
+  getGoogleData()
+}, 600000)
 
 app.listen(PORT, error => (
   error

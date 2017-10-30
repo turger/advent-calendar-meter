@@ -22,7 +22,9 @@ class App extends Component {
         data: this.sortByBest(data),
         loading: false
       })
-    )
+    ).catch(function (err) {
+     console.log('Error:', err)
+   })
   }
 
   sortByBest = (data) => {
