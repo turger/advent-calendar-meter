@@ -38,7 +38,7 @@ class App extends Component {
           <div className="allgroups">
           { this.state.loading && <div className="loader"/> }
           { this.state.data && this.state.data.map((group, i) =>
-            <div className="group">
+            <div className="group" key={group+i}>
               <div className="group__info">
                 <h2 className="group__name"> { group.total.sheetName } </h2>
                 <div className="group__achievements">

@@ -5,6 +5,7 @@ import Husky from '../../assets/images/dog.png'
 import Tonttu from '../../assets/images/elf.png'
 import WiseMan from '../../assets/images/man_mage.png'
 import Star from '../../assets/images/glowing_star.png'
+import shortid from 'shortid'
 
 const getImage = (name) => {
   switch(name) {
@@ -44,10 +45,10 @@ const Stamps = ({stamps}) => (
   stamps ?
     <div className="group__stamps">
       { stamps.map(stamp =>
-        <div>
+        <div key={stamp+shortid.generate()}>
           <img src={ getImage(stamp) }/>
           <div className="tooltip">
-            <span class="tooltiptext">{ getToolTip(stamp) }</span>
+            <span className="tooltiptext">{ getToolTip(stamp) }</span>
           </div>
         </div>
       )}
