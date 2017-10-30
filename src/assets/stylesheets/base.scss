@@ -129,17 +129,12 @@ h1 {
   flex-flow: row;
 }
 
-.group__badges .Emoji, .group__stamps .Emoji {
+.group__badges img, .group__stamps img {
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  width: 25px;
-  height: 25px;
   margin: 5px;
-}
-
-.group__badges img, .group__stamps img {
   width: 25px;
   height: 25px;
 }
