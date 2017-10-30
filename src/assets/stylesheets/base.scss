@@ -35,7 +35,7 @@ h1 {
 	animation-name: fadeIn;
 	animation-iteration-count: 1;
 	transition-timing-function: cubic-bezier(.21,.68,.23,1.12);
-	animation-duration: 500ms;
+	animation-duration: 300ms;
 }
 
 @keyframes fadeIn {
@@ -97,6 +97,15 @@ h1 {
   height: 45px;
 }
 
+.group__ranking--trophy {
+  animation-delay: 100ms;
+  animation: pop 500ms linear 1;
+}
+
+@keyframes pop{
+  50% { transform: scale(1.2); }
+}
+
 .group__rankingnumber {
   position: absolute;
   margin-top: -50px;
@@ -108,12 +117,12 @@ h1 {
   color: #fff;
 }
 
-.group__rankingnumber--star {
+.group__ranking--star .group__rankingnumber {
   margin-top: -38px;
   margin-left: 18px;
 }
 
-.group__rankingnumber--big {
+.group__ranking--star--bignum .group__rankingnumber {
   margin-top: -38px;
   margin-left: 14px;
 }
