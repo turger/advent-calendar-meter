@@ -1,8 +1,7 @@
 import React from 'react'
-import Emoji from './emoji'
 import classNames from 'classnames'
-import Trophy from '../../assets/trophy.png'
-import Star from '../../assets/star.png'
+import Trophy from '../../assets/images/trophy.png'
+import Star from '../../assets/images/star.png'
 
 const Rank = ({ranking}) => (
   <div className="group__ranking">

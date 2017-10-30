@@ -1,20 +1,25 @@
 import React from 'react'
-import Emoji from './emoji'
+import Grinch from '../../assets/images/alien.png'
+import Snowman from '../../assets/images/snowman.png'
+import Husky from '../../assets/images/dog.png'
+import Tonttu from '../../assets/images/elf.png'
+import WiseMan from '../../assets/images/man_mage.png'
+import Star from '../../assets/images/glowing_star.png'
 
-const getEmojiName = (name) => {
+const getImage = (name) => {
   switch(name) {
     case 'grinch':
-      return ':alien:'
+      return Grinch
     case 'snowman':
-      return ':snowman:'
+      return Snowman
     case 'husky':
-      return ':dog2:'
+      return Husky
     case 'tonttu':
-      return ':man_elf:'
+      return Tonttu
     case 'threewisemen':
-      return ':man_mage:'
+      return WiseMan
     case 'christmasstar':
-      return ':star2:'
+      return Star
   }
 }
 
@@ -40,7 +45,7 @@ const Stamps = ({stamps}) => (
     <div className="group__stamps">
       { stamps.map(stamp =>
         <div>
-          <Emoji name={ getEmojiName(stamp) }/>
+          <img src={ getImage(stamp) }/>
           <div className="tooltip">
             <span class="tooltiptext">{ getToolTip(stamp) }</span>
           </div>

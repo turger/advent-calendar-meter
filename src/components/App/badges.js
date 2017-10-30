@@ -1,14 +1,16 @@
 import React from 'react'
-import Emoji from './emoji'
+import PeoplePartying from '../../assets/images/people_partying.png'
+import Gift from '../../assets/images/gift.png'
+import Crown from '../../assets/images/crown.png'
 
-const getEmojiName = (name) => {
+const getImage = (name) => {
   switch(name) {
     case 'mostSellers':
-      return ':people_with_bunny_ears_partying:'
+      return PeoplePartying
     case 'mostCalendars':
-      return ':gift:'
+      return Gift
     case 'mostSoldPerSeller':
-      return ':crown:'
+      return Crown
   }
 }
 
@@ -28,7 +30,7 @@ const Badges = ({badges}) => (
     <div className="group__badges">
       { badges.map(badge =>
         <div>
-          <Emoji name={ getEmojiName(badge) } />
+          <img src={ getImage(badge) }/>
           <div className="tooltip">
             <span class="tooltiptext">{ getToolTip(badge) }</span>
           </div>
