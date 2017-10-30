@@ -4,12 +4,14 @@ import Badges from './badges'
 import Stamps from './stamps'
 import Ranking from './ranking'
 import 'src/assets/stylesheets/base.scss'
+import 'src/assets/stylesheets/loader.scss'
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: ''
+      data: '',
+      loading: true
     }
   }
 
@@ -18,6 +20,7 @@ class App extends Component {
       .then((response) => response.json())
       .then((data) => this.setState({
         data: this.sortByBest(data),
+        loading: false
       })
     )
   }
@@ -27,12 +30,12 @@ class App extends Component {
   }
 
   render() {
-    if (!this.state.data) return null
     return (
       <div>
         <h1>Koukkaajien kalenteri&shy;myynti&shy;kisa</h1>
           <div className="allgroups">
-          { this.state.data.map((group, i) =>
+          { this.state.loading && <div className="loader"/> }
+          { this.state.data && this.state.data.map((group, i) =>
             <div className="group">
               <div className="group__info">
                 <h2 className="group__name"> { group.total.sheetName } </h2>
