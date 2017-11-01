@@ -92,19 +92,20 @@ h1 {
 }
 
 .group__ranking--trophy {
-  animation: pop 600ms linear 1;
+  animation: pop 800ms ease 1;
+  animation-fill-mode: backwards;
 }
 
 .group:nth-child(1) .group__ranking--trophy {
-  animation-delay: 200ms;
+  animation-delay: 300ms;
 }
 
 .group:nth-child(2) .group__ranking--trophy {
-  animation-delay: 400ms;
+  animation-delay: 500ms;
 }
 
 .group:nth-child(3) .group__ranking--trophy {
-  animation-delay: 600ms;
+  animation-delay: 700ms;
 }
 
 .group__rankingnumber {
@@ -198,5 +199,7 @@ h1 {
 }
 
 @keyframes pop {
-  50% { transform: scale(1.2); }
+  0% { transform: scale(0); }
+  30% { transform: scale(1.2); }
+  100% { transform: scale(1); }
 }
