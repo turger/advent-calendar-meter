@@ -88,8 +88,16 @@ formatSheetValuesToMap = (sheetData) => {
       let formattedSheetData = {}
       const sheetName = sheet.range.split('!')[0].replace(/\'/g,' ').trim()
       if (sheetName === 'Adventtikalenterit') return
-      console.log(sheetName)
+      if (!sheet.values) {
+        console.log('Empty sheet:', sheetName)
+        return
+      }
       const titles = getTitlesRow(sheet.values[1])
+      if (titles[-1]) {
+        console.log('Invalid sheet format:', sheetName)
+        return
+      }
+      console.log(sheetName)
       const totalRow = formatTotalRow(titles, sheet.values[0], getSellerCount(sheet.values), sheetName)
       formattedSheetData['total'] = totalRow
       let tonttuData = []
