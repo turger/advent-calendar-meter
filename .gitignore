@@ -1,7 +1,9 @@
-node_modules/
-*npm-debug.log
-*.DS_Store
-dist/bundle.js
-coverage
-.env
-package-lock.json
+/functions/.runtimeconfig.json
+/functions/node_modules
+/node_modules
+/.idea
+firebase-debug.log
+/.firebase
+/build
+yarn-debug.log*
+yarn-error.log*

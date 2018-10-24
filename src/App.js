@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Badges from './badges'
-import Stamps from './stamps'
-import Ranking from './ranking'
-import 'src/assets/stylesheets/base.scss'
-import 'src/assets/stylesheets/loader.scss'
+import axios from 'axios'
+import Badges from './Badges'
+import Stamps from './Stamps'
+import Ranking from './Ranking'
+import './assets/stylesheets/base.css'
+import './assets/stylesheets/loader.css'
+
+const dataUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:5000/koukkaaja-kalenterit/us-central1/getData' : 'https://us-central1-koukkaaja-kalenterit.cloudfunctions.net/getData'
 
 class App extends Component {
   constructor(props) {
@@ -16,15 +18,15 @@ class App extends Component {
   }
 
   componentDidMount() {
-    fetch('data')
-      .then((response) => response.json())
+    axios.get(dataUrl)
+      .then(response => response.data)
       .then((data) => this.setState({
-        data: this.sortByBest(data),
-        loading: false
-      })
-    ).catch(function (err) {
-     console.log('Error:', err)
-   })
+          data: this.sortByBest(data),
+          loading: false
+        })
+      ).catch(function (err) {
+      console.error('Error:', err)
+    })
   }
 
   sortByBest = (data) => {
@@ -34,8 +36,8 @@ class App extends Component {
   render() {
     return (
       <div>
-        <h1>Koukkaajien kalenteri&shy;myynti&shy;kisa</h1>
-          <div className="allgroups">
+        <h1>Koukkaajien adventti&shy;kalenteri&shy;myynti</h1>
+        <div className="allgroups">
           { this.state.loading && <div className="loader"/> }
           { this.state.data && this.state.data.map((group, i) =>
             <div className="group" key={group+i}>

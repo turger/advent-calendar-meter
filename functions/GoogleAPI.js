@@ -1,114 +1,104 @@
-const GoogleAuth = require('google-auth-library')
-const google = require('googleapis')
+const admin = require('firebase-admin')
+const functions = require('firebase-functions')
+admin.initializeApp()
+const database = admin.database()
+const { google } = require('googleapis')
 const sheetsApi = google.sheets('v4')
+const _ = require('lodash')
 
-const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-const SPREADSHEET_ID = '1XrJP2FexvH5KnEawzYnEO0hPc7UWTCY5WWa-_dqeegI'
-
-authorize = () => {
-    return new Promise(resolve => {
-        const authFactory = new GoogleAuth()
-        const jwtClient = new authFactory.JWT(
-            process.env.GOOGLE_CLIENT_EMAIL,
-            null,
-            process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-            SCOPES
-        )
-        jwtClient.authorize(() => resolve(jwtClient))
-    })
-}
+const SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly'
 
 getAllData = () => {
   return new Promise(resolve => {
-    authorize().then(auth => {
-      getRanges(auth).then(ranges => {
-        getSheetData(ranges, auth).then(data => {
-          resolve(data)
-        })
-      })
-    }).catch(function (err) {
-     console.log('Error:', err)
-   })
+    getCongfig()
+    .then(config => resolve(getData(config)))
+    .catch(err => {
+      throw new Error(`Error: ${err}`)
+    })
   })
 }
 
-getRanges = (auth) => {
+getCongfig = () => {
+  return new Promise(resolve => {
+    database.ref('/config').on('value', (snapshot) => {
+      const data = snapshot.val()
+      const googleKey = functions.config().calendarservice.googlekey
+      const config = Object.keys(data).reduce((acc, key) => (Object.assign(acc, {[key]: data[key]})), {})
+      const jwtClient = new google.auth.JWT({email: config.googleClientEmail, key: googleKey.replace(/\\n/g, '\n'), scopes: SCOPES})
+      config.auth = jwtClient
+      resolve(config)
+    })
+  })
+}
+
+getData = (config) => {
+  // first get ranges
   return new Promise(resolve => {
     sheetsApi.spreadsheets.get({
-      auth: auth,
-      spreadsheetId: SPREADSHEET_ID,
-    }, function(err, response) {
+      auth: config.auth,
+      spreadsheetId: config.spreadsheetId,
+    }, (err, response) => {
       if (err) {
         console.error('The API returned an error: ' + err)
         return
       }
-      const sheets = response.sheets
-      const ranges = []
-      const selection = '!A3:I30'
-      if (sheets.length == 0) {
-        console.error('No data found.')
-        return
+      const sheets = response.data.sheets
+      if (sheets.length === 0) {
+        throw new Error('No data found from sheet')
       } else {
-        sheets.map( sheet => (
-          ranges.push(sheet.properties.title+selection)
-        ))
-        resolve(ranges)
+        const selection = '!A3:I30'
+        const ranges = sheets.map(sheet => sheet.properties.title+selection)
+        resolve(getSheetData(ranges, config))
       }
     })
   })
 }
 
-getSheetData = (ranges, auth) => {
+getSheetData = (ranges, config) => {
   return new Promise(resolve => {
     sheetsApi.spreadsheets.values.batchGet({
-      auth: auth,
-      spreadsheetId: SPREADSHEET_ID,
+      auth: config.auth,
+      spreadsheetId: config.spreadsheetId,
       ranges: ranges,
-    }, function(err, response) {
+    }, (err, response) => {
       if (err) {
         console.error('The API returned an error: ' + err)
         return
       }
-      const sheetData = response.valueRanges
-      if (sheetData.length == 0) {
+      const sheetData = response.data.valueRanges
+      if (sheetData.length === 0) {
         console.log('No data found.')
       } else {
         formatSheetValuesToMap(sheetData).then(data => {
-          resolve(data)
+          return resolve(data)
+        }).catch(err => {
+          throw new Error(`Error: ${err}`)
         })
       }
     })
   })
 }
 
+_getSheetName = range => range.split('!')[0].replace(/'/g,' ').trim()
+
 formatSheetValuesToMap = (sheetData) => {
   return new Promise(resolve => {
-    let allSpreadSheetData = []
-    sheetData.map( sheet => {
-      let formattedSheetData = {}
-      const sheetName = sheet.range.split('!')[0].replace(/\'/g,' ').trim()
-      if (sheetName === 'Adventtikalenterit') return
-      if (!sheet.values) {
-        console.log('Empty sheet:', sheetName)
-        return
-      }
-      const titles = getTitlesRow(sheet.values[1])
-      if (titles[-1]) {
-        console.log('Invalid sheet format:', sheetName)
-        return
-      }
-      console.log(sheetName)
-      const totalRow = formatTotalRow(titles, sheet.values[0], getSellerCount(sheet.values), sheetName)
-      formattedSheetData['total'] = totalRow
-      let tonttuData = []
-      const allData = sheet.values.map(row => {
-        if (row[0] === '' || row[0] === 'Nimi') return
-        if (row[0].toLowerCase().indexOf('yht') === 0) { return }
-        tonttuData.push(formatTonttuRow(titles, row))
+    const allSpreadSheetData = sheetData
+      .filter(sheet => sheet.values && _getSheetName(sheet.range) !== 'Adventtikalenterit')
+      .map(sheet => {
+        let formattedSheetData = {}
+        const sheetName = _getSheetName(sheet.range)
+        const titles = getTitlesRow(sheet.values[1])
+        if (titles[-1]) {
+          throw new Error('Invalid sheet format:', sheetName)
+        }
+        const totalRow = formatTotalRow(titles, sheet.values[0], getSellerCount(sheet.values), sheetName)
+        formattedSheetData['total'] = totalRow
+        formattedSheetData['tontut'] = sheet.values
+          .filter(row => row[0] !== '' && row[0] !== 'Nimi' && row[0].toLowerCase().indexOf('yht') === -1)
+          .map(row => formatTonttuRow(titles, row))
+        return formattedSheetData
       })
-      formattedSheetData['tontut'] = tonttuData
-      allSpreadSheetData.push(formattedSheetData)
-    })
     const allSpreadSheetDataWithBadgesAndStamps = addBadgesAndStamps(allSpreadSheetData)
     resolve(allSpreadSheetDataWithBadgesAndStamps)
   })
@@ -136,7 +126,7 @@ includes = (titles, title) => {
 
 formatTotalRow = (titles, row, totalSellers, sheetName) => {
   let data = {}
-  row.map((col, i) => {
+  row.forEach((col, i) => {
     let value = col
     data[titles[i]] = value
   })
@@ -149,7 +139,7 @@ formatTotalRow = (titles, row, totalSellers, sheetName) => {
 
 formatTonttuRow = (titles, row) => {
   let data = {}
-  row.map((col, i) => {
+  row.forEach((col, i) => {
     let value = col
     if (titles[i] === 'name' && col.toLowerCase().indexOf('yht') < 0) value = 'tonttu'
     data[titles[i]] = value
@@ -158,16 +148,14 @@ formatTonttuRow = (titles, row) => {
 }
 
 addBadgesAndStamps = (allData) => {
-  let allDataWithBadgesAndStamps = []
-  allData.map(data => {
+  return allData.map(data => {
     let sheetData = data
     let badges = addBadges(allData, data)
     let stamps = addStamps(data)
     sheetData.total.badges = badges
     sheetData.total.stamps = stamps
-    allDataWithBadgesAndStamps.push(sheetData)
+    return sheetData
   })
-  return allDataWithBadgesAndStamps
 }
 
 addBadges = (allData, data) => {
@@ -194,5 +182,6 @@ addStamps = (data) => {
 }
 
 module.exports = {
-    getAllData
+  getAllData
 }
+

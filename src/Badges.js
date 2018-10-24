@@ -1,7 +1,7 @@
 import React from 'react'
-import PeoplePartying from '../../assets/images/people_partying.png'
-import Gift from '../../assets/images/gift.png'
-import Crown from '../../assets/images/crown.png'
+import PeoplePartying from './assets/images/people_partying.png'
+import Gift from './assets/images/gift.png'
+import Crown from './assets/images/crown.png'
 import shortid from 'shortid'
 
 const getImage = (name) => {
